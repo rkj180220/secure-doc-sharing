@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-securedocsharing-dev-80713-authRole",
+      "UnauthRoleArn": "arn:aws:iam::903051706172:role/amplify-securedocsharing-dev-80713-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::903051706172:role/amplify-securedocsharing-dev-80713-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-securedocsharing-dev-80713-deployment",
+      "UnauthRoleName": "amplify-securedocsharing-dev-80713-unauthRole",
+      "StackName": "amplify-securedocsharing-dev-80713",
+      "StackId": "arn:aws:cloudformation:us-east-1:903051706172:stack/amplify-securedocsharing-dev-80713/dc2a0e40-983f-11ef-bf7b-0e3d84fe1b0f",
+      "AmplifyAppId": "dhnlx147e7svw"
+    },
+    "categories": {
+      "auth": {
+        "securedocsharing12e3dcd3": {}
+      }
+    }
+  }
+}
