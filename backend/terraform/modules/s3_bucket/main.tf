@@ -4,6 +4,14 @@ resource "random_id" "bucket_id" {
 
 resource "aws_s3_bucket" "secure_document_storage" {
   bucket = "secure-doc-storage-${random_id.bucket_id.hex}"
+
+    cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "PUT", "POST", "DELETE"]
+    allowed_origins = ["http://localhost:5173"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
 }
 
 resource "aws_s3_bucket_versioning" "secure_document_storage_versioning" {

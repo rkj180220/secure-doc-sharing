@@ -8,6 +8,10 @@ output "bucket_name" {
   value = module.s3_bucket.bucket_name
 }
 
+output "dynamodb_table_name" {
+  value = module.dynamodb.table_name
+}
+
 # output "user_pool_id" {
 #   description = "The ID of the Cognito User Pool"
 #   value       = module.cognito.user_pool_id

@@ -3,28 +3,14 @@ resource "aws_api_gateway_rest_api" "doc_api" {
   description = "API for the secure document sharing system."
 }
 
-resource "aws_api_gateway_resource" "file" {
-  rest_api_id = aws_api_gateway_rest_api.doc_api.id
-  parent_id   = aws_api_gateway_rest_api.doc_api.root_resource_id
-  path_part   = "file"
+resource "aws_api_gateway_authorizer" "cognito_authorizer" {
+  name                   = "CognitoAuthorizer"
+  rest_api_id            = aws_api_gateway_rest_api.doc_api.id
+  identity_source        = "method.request.header.Authorization"
+  provider_arns          = [var.cognito_user_pool_arn]
+  type                   = "COGNITO_USER_POOLS"
 }
-
-resource "aws_api_gateway_method" "upload_file" {
-  rest_api_id   = aws_api_gateway_rest_api.doc_api.id
-  resource_id   = aws_api_gateway_resource.file.id
-  http_method   = "POST"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "upload_file_lambda" {
-  rest_api_id             = aws_api_gateway_rest_api.doc_api.id
-  resource_id             = aws_api_gateway_resource.file.id
-  http_method             = aws_api_gateway_method.upload_file.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = var.lambda_function_invoke_arn
-}
-
+#
 resource "aws_lambda_permission" "api_gateway_lambda" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
@@ -34,19 +20,11 @@ resource "aws_lambda_permission" "api_gateway_lambda" {
 
 resource "aws_api_gateway_deployment" "doc_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.doc_api.id
-  # stage_name  = var.stage_name
 
   depends_on = [
-    aws_api_gateway_integration.upload_file_lambda
+    aws_api_gateway_integration.upload_file_lambda,
+    aws_api_gateway_integration.get_presigned_url_lambda
   ]
-
-  # triggers = {
-  #   redeployment = sha1(jsonencode(aws_api_gateway_rest_api.doc_api.body))
-  # }
-  #
-  # lifecycle {
-  #   create_before_destroy = true
-  # }
 }
 
 resource "aws_api_gateway_stage" "dev_stage" {
@@ -73,6 +51,3 @@ resource "aws_api_gateway_method_settings" "doc_api_method_settings" {
   }
 }
 
-output "api_endpoint" {
-  value = "https://${aws_api_gateway_rest_api.doc_api.id}.execute-api.${var.region}.amazonaws.com/${aws_api_gateway_stage.dev_stage.stage_name}/file"
-}
