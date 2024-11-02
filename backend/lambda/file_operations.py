@@ -60,10 +60,15 @@ def get_pre_signed_url(event):
 
     return {
         'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': 'http://localhost:5173',
+            'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST',
+        },
         'body': json.dumps({
             'message': f"Presigned URL generated for {file_name}",
             'pre_signedUrl': pre_signed_url
-        })
+        }),
     }
 
 def update_file_metadata(event):

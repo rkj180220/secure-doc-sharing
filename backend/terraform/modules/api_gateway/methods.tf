@@ -82,7 +82,7 @@ resource "aws_api_gateway_integration_response" "post_upload_file" {
   status_code = aws_api_gateway_method_response.post_upload_file.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = "'http://localhost'"
+    "method.response.header.Access-Control-Allow-Origin" = "'http://localhost:5173'"
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
   }
 }
@@ -127,7 +127,7 @@ resource "aws_api_gateway_integration_response" "options_presigned_url" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
     "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
-    "method.response.header.Access-Control-Allow-Origin"  = "'http://localhost'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'http://localhost:5173'"
   }
 
   response_templates = {
@@ -156,7 +156,7 @@ resource "aws_api_gateway_integration_response" "post_presigned_url" {
   status_code = aws_api_gateway_method_response.post_presigned_url.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = "'http://localhost'"
+    "method.response.header.Access-Control-Allow-Origin" = "'http://localhost:5173'"
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
   }
 }
