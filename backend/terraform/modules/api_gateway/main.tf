@@ -18,6 +18,13 @@ resource "aws_lambda_permission" "api_gateway_lambda" {
   principal     = "apigateway.amazonaws.com"
 }
 
+resource "aws_lambda_permission" "allow_api_gateway_invoke" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = var.cognito_user_lambda_function_name
+  principal     = "apigateway.amazonaws.com"
+}
+
 resource "aws_api_gateway_deployment" "doc_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.doc_api.id
 

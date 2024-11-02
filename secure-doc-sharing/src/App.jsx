@@ -5,6 +5,7 @@ import config from './amplifyconfiguration.json';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Home from './components/Home';
 import Upload from './components/Upload';
+import Users from "./components/Users";
 
 Amplify.configure(config);
 
@@ -17,6 +18,8 @@ function App({signOut, user}) {
                     <Route path="/" element={<Navigate to="/home"/>}/>
                     <Route path="/home" element={<Home user={user}/>}/>
                     <Route path="/upload" element={<Upload user={user}/>}/>
+                    <Route path="/users" element={<Users user={user}/>}/>
+
                 </Routes>
             </Router>
         </>

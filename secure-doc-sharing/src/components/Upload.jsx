@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axiosInstance from '../axiosConfig';
 import config from '../config';
+import axios from "axios";
 
 const Upload = ({ user }) => {
     const [file, setFile] = useState(null);
@@ -23,7 +24,9 @@ const Upload = ({ user }) => {
                 fileType: file.type
             });
 
-            const { presignedUrl } = response.data;
+            console.log(response)
+
+            const presignedUrl  = response.data.pre_signedUrl;
 
             // Upload file to S3 using the presigned URL
             await axios.put(presignedUrl, file, {

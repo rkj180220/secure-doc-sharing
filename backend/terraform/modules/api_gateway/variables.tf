@@ -41,3 +41,13 @@ variable "cognito_user_pool_arn" {
   type        = string
   default = "arn:aws:cognito-idp:us-east-1:903051706172:userpool/us-east-1_e0s6Me24U"
 }
+
+variable "cognito_user_lambda_invoke_arn" {
+  description = "The Invoke ARN of the Lambda function."
+  type        = string
+}
+
+variable "cognito_user_lambda_function_name" {
+  description = "The ARN of the Lambda function."
+  type        = string
+}
