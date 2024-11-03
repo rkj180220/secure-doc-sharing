@@ -1,0 +1,74 @@
+ /* Upload.css */
+.upload-container {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.upload-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.file-input {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.file-input input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+}
+
+.file-input label {
+    display: block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.file-input label:hover {
+    background-color: #0056b3;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+button:hover:enabled {
+    background-color: #218838;
+}
+
+.message {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.message.uploading {
+    color: #007bff;
+}
