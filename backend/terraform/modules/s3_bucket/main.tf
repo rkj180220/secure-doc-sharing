@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "secure_document_storage" {
     cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "PUT", "POST", "DELETE"]
-    allowed_origins = ["http://localhost:5173"]
+    allowed_origins = ["http://localhost:5173", "https://dev.dhnlx147e7svw.amplifyapp.com"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }

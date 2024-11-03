@@ -47,6 +47,14 @@ def lambda_handler(event, context):
                 'statusCode': 400,
                 'body': json.dumps('Invalid HTTP method')
             }
+    elif path == '/shareFile':
+        if http_method == 'POST':
+            return generate_presigned_url(event)
+        else:
+            return {
+                'statusCode': 400,
+                'body': json.dumps('Invalid HTTP method')
+            }
     else:
         return {
             'statusCode': 404,
@@ -126,7 +134,7 @@ def get_pre_signed_url(event):
     return {
         'statusCode': 200,
         'headers': {
-            'Access-Control-Allow-Origin': 'http://localhost:5173',
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
             'Access-Control-Allow-Methods': 'OPTIONS,POST',
         },
@@ -181,7 +189,7 @@ def list_files(event):
     return {
         'statusCode': 200,
         'headers': {
-            'Access-Control-Allow-Origin': 'http://localhost:5173',
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
             'Access-Control-Allow-Methods': 'OPTIONS,POST',
         },
@@ -244,3 +252,47 @@ def update_file(event):
         'statusCode': 200,
         'body': json.dumps(f"File {file_name} updated successfully")
     }
+
+def generate_presigned_url(event):
+    body = json.loads(event['body'])
+    object_key = body['objectKey']
+    expiration = body.get('expiration', 300)
+
+    url = generate_presigned_url_for_sharing(object_key, expiration)
+
+    if url:
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST',
+            },
+            'body': json.dumps({
+                'message': f"Presigned URL generated for {object_key}",
+                'pre_signedUrl': url
+            })
+        }
+    else:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST',
+            },
+            'body': json.dumps('Failed to generate presigned URL')
+        }
+
+def generate_presigned_url_for_sharing(object_key, expiration=300):
+    try:
+        url = s3_client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket':  os.environ['S3_BUCKET'],
+             'Key': object_key},
+            ExpiresIn=expiration
+        )
+        return url
+    except Exception as e:
+        print(f"Error generating presigned URL: {e}")
+        return None

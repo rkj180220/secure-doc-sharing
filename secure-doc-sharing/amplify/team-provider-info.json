@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "securedocsharing12e3dcd3": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dhnlx147e7svw",
+          "type": "manual"
+        }
       }
     }
   }

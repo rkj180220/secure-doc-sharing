@@ -12,7 +12,7 @@ axiosInstance.interceptors.request.use(
             const { idToken } = (await fetchAuthSession()).tokens ?? {};
             if (idToken) {
                 request.headers.Authorization = `Bearer ${idToken}`;
-                console.log('Authorization header set:', request.headers.Authorization);
+                // console.log('Authorization header set:', request.headers.Authorization);
             } else {
                 console.error('idToken is not available');
             }

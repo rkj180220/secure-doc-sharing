@@ -18,3 +18,10 @@ resource "aws_api_gateway_resource" "list_cognito_users" {
   parent_id   = aws_api_gateway_rest_api.doc_api.root_resource_id
   path_part   = "listCognitoUsers"
 }
+
+# upload file
+resource "aws_api_gateway_resource" "share_file" {
+  rest_api_id = aws_api_gateway_rest_api.doc_api.id
+  parent_id   = aws_api_gateway_rest_api.doc_api.root_resource_id
+  path_part   = "shareFile"
+}

@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../axiosConfig';
 import config from '../config';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, CircularProgress } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
+import CopyIcon from '@mui/icons-material/FileCopy';
 
 const Home = ({ user }) => {
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
+    const [presignedUrl, setPresignedUrl] = useState('');
 
     useEffect(() => {
         const fetchFiles = async () => {
@@ -24,13 +27,30 @@ const Home = ({ user }) => {
         fetchFiles();
     }, [user.id]);
 
-    const handleShare = (fileId) => {
-        // Implement your share functionality here
-        console.log(`Share file: ${fileId}`);
+    const handleShare = async (fileId) => {
+        try {
+            const response = await axiosInstance.post(config.apiGateway.shareFile, {
+                objectKey: fileId,
+                expiration: 300 // Optional: specify expiration time in seconds
+            });
+            setPresignedUrl(response.data.pre_signedUrl);
+            setOpen(true);
+        } catch (error) {
+            console.error('Error sharing file:', error);
+        }
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setPresignedUrl('');
+    };
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(presignedUrl);
     };
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <CircularProgress />;
     }
 
     return (
@@ -69,6 +89,22 @@ const Home = ({ user }) => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Presigned URL</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        fullWidth
+                        value={presignedUrl}
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCopy} startIcon={<CopyIcon />}>Copy</Button>
+                    <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };
