@@ -62,7 +62,7 @@ resource "aws_api_gateway_integration_response" "options_upload_file" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
     "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
-    "method.response.header.Access-Control-Allow-Origin"  = "'http://localhost'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'http://localhost:5173'"
   }
 
   response_templates = {

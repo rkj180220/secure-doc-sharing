@@ -38,7 +38,10 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "dynamodb:DeleteItem",
           "dynamodb:Query"
         ],
-        Resource = "${var.dynamodb_table_arn}",
+        Resource = [
+          "${var.dynamodb_table_arn}",
+          "${var.dynamodb_table_arn}/index/UserID-index"
+        ],
         Effect   = "Allow"
       },
       {

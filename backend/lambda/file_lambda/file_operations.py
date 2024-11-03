@@ -3,33 +3,54 @@ import json
 import os
 from datetime import datetime
 from base64 import b64decode
+from decimal import Decimal
+from boto3.dynamodb.conditions import Key
 
 s3_client = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return super(DecimalEncoder, self).default(obj)
 
 def lambda_handler(event, context):
     if 'Records' in event and event['Records'][0]['eventSource'] == 'aws:s3':
         print(f"S3 event detected {event}")
         return handle_s3_event(event)
 
+    path = event['path']
     http_method = event['httpMethod']
     print(f"event: {event}")
     print(f"HTTP method: {http_method}")
+    print(f"Path: {path}")
 
-    if http_method == 'POST':
-        return get_pre_signed_url(event)
-    elif http_method == 'GET':
-        return list_files(event)
-    elif http_method == 'DELETE':
-        return delete_file(event)
-    elif http_method == 'PUT':
-        return update_file(event)
+    if path == '/file':
+        if http_method == 'POST':
+            return list_files(event)
+        elif http_method == 'DELETE':
+            return delete_file(event)
+        elif http_method == 'PUT':
+            return update_file(event)
+        else:
+            return {
+                'statusCode': 400,
+                'body': json.dumps('Invalid HTTP method')
+            }
+    elif path == '/file/presignedURL':
+        if http_method == 'POST':
+            return get_pre_signed_url(event)
+        else:
+            return {
+                'statusCode': 400,
+                'body': json.dumps('Invalid HTTP method')
+            }
     else:
         return {
-            'statusCode': 400,
-            'body': json.dumps('Invalid HTTP method')
+            'statusCode': 404,
+            'body': json.dumps('Path not found')
         }
 
 
@@ -148,16 +169,23 @@ def update_file_metadata(event):
 
 
 def list_files(event):
-    user_id = event['queryStringParameters']['userId']
+    body = json.loads(event['body'])
+    user_id = body['userId']
 
     # Query files by user from DynamoDB
     response = table.query(
+        IndexName='UserID-index',  # Ensure you have a secondary index on UserID
         KeyConditionExpression=Key('UserID').eq(user_id)
     )
 
     return {
         'statusCode': 200,
-        'body': json.dumps(response['Items'])
+        'headers': {
+            'Access-Control-Allow-Origin': 'http://localhost:5173',
+            'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST',
+        },
+        'body': json.dumps(response['Items'], cls=DecimalEncoder)
     }
 
 

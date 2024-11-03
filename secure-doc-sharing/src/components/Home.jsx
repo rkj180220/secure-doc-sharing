@@ -9,7 +9,7 @@ const Home = ({ user }) => {
     useEffect(() => {
         const fetchFiles = async () => {
             try {
-                const response = await axiosInstance.get(config.apiGateway.getFiles);
+                const response = await axiosInstance.post(config.apiGateway.getFiles, {});
                 setFiles(response.data);
             } catch (error) {
                 console.error('Error fetching files:', error);
@@ -18,7 +18,7 @@ const Home = ({ user }) => {
         };
 
         fetchFiles();
-    }, []);
+    }, [user.id]);
 
     if (loading) {
         return <p>Loading...</p>;

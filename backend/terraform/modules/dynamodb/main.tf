@@ -14,6 +14,12 @@ resource "aws_dynamodb_table" "file_metadata" {
     type = "S"
   }
 
+  global_secondary_index {
+    name            = "UserID-index"
+    hash_key        = "UserID"
+    projection_type = "ALL"
+  }
+
   tags = {
     Name = "File Metadata Table"
   }
